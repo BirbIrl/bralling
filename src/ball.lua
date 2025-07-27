@@ -33,13 +33,15 @@ return {
 		end
 
 		function ball:update(dt)
-			local vel = vec.new(self.gs.body:getLinearVelocity())
-			local mag = vel:getmag()
+			local x, y = self.gs.body:getLinearVelocity()
 			local max = self.maxSpeed
-			if mag > max then
-				self.gs.body:setLinearVelocity(vel.x * (max / mag), vel.y * (max / mag))
-				print("dampened " .. mag .. " to " .. max)
+			if x > max then
+				x = max
 			end
+			if y > max then
+				y = max
+			end
+			self.gs.body:setLinearVelocity(x, y)
 		end
 
 		function ball:_draw()
