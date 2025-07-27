@@ -10,7 +10,8 @@ function love.load()
 	love.graphics.setBackgroundColor(colors["Off White"])
 	gs:addBall(player)
 	gs:addBall(ball.new())
-	player.gs.body:setLinearVelocity(200, 0)
+	player:findClosestBall()
+	--player.gs.body:setLinearVelocity(200, 0)
 end
 
 function love.update(dt)
