@@ -1,17 +1,13 @@
 local vec = require("lib.modules.vector")
 local colors = require("lib.modules.colors")
 return {
-	new = function(color)
+	new = function(color, radius)
 		---@class Ball.lua
 		local ball = {
-			radius = 25,
+			radius = radius or 32,
 			health = 100,
-			gs = {
-				parent = nil,
-				---@type Vector.lua
-				pos = nil,
-				damage = 0
-			}
+			---@type gsHeader
+			gs = nil
 		}
 		if color then
 			ball.color = color
@@ -22,20 +18,27 @@ return {
 
 		---adds the ball to a given gamestate, used by gamestate:addBall
 		---@param gamestate Gamestate.lua
-		---@param pos Vector.lua
-		function ball:_addToGame(gamestate, pos)
+		---@param body love.Body
+		---@param shape love.Shape
+		---@param fixture love.Fixture
+		function ball:_addToGame(gamestate, body, shape, fixture)
+			---@class gsHeader
 			self.gs = {
 				parent = gamestate,
-				pos = pos:clone()
+				body = body,
+				shape = shape,
+				fixture = fixture,
 			}
 		end
 
 		function ball:_draw()
 			love.graphics.setLineWidth(1)
 			love.graphics.setColor(colors[self.color])
-			love.graphics.circle("fill", self.gs.pos.x, self.gs.pos.y, self.radius)
+			love.graphics.circle("fill", self.gs.body:getX(), self.gs.body:getY(),
+				self.radius)
 			love.graphics.setColor(colors["Almost Black"])
-			love.graphics.circle("line", self.gs.pos.x, self.gs.pos.y, self.radius)
+			love.graphics.circle("line", self.gs.body:getX(), self.gs.body:getY(),
+				self.radius)
 		end
 
 		return ball

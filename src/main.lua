@@ -2,20 +2,28 @@ local colors = require("lib.modules.colors")
 serpent = require("lib.modules.serpent") ---@diagnostic disable-line
 local gamestate = require("gamestate")
 local ball = require("ball")
+
+love.physics.setMeter(32)
 local gs = gamestate.new()
 local player = ball.new()
 function love.load()
 	love.graphics.setBackgroundColor(colors["Off White"])
 	gs:addBall(player)
+	gs:addBall(ball.new(nil, 64))
+	gs:addBall(ball.new())
+	gs:addBall(ball.new())
+	gs:addBall(ball.new())
+end
+
+function love.update(dt)
+	gs.world:update(dt)
 end
 
 function love.draw()
 	love.graphics.setCanvas(gs.canvas)
+	love.graphics.clear()
 	love.graphics.setLineWidth(2)
 	gs:_draw()
-	for _, ball in ipairs(gs.balls) do
-		ball:_draw()
-	end
 	love.graphics.setCanvas()
 	love.graphics.setColor(1, 1, 1)
 	love.graphics.draw(gs.canvas, (love.graphics.getWidth() - gs.canvas:getWidth()) / 2
