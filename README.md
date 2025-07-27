@@ -1,2 +1,2 @@
-# bralling
-Weapon Ball Battles as a roguelike game
+# Bralling
+Twitter feed slop has forced my hand to make this, i apologise
