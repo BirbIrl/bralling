@@ -46,11 +46,19 @@ return {
 					love.math.random(0 + ball.radius, self.size.y - ball.radius))
 			end
 			local body = love.physics.newBody(self.world, pos.x, pos.y, "dynamic")
+			body:setLinearDamping(0)
 			local shape = love.physics.newCircleShape(ball.radius)
 			local fixture = love.physics.newFixture(body, shape)
-			fixture:setRestitution(0.9)
+			fixture:setRestitution(1.25)
 			ball:_addToGame(self, body, shape, fixture)
 			table.insert(self.balls, ball)
+		end
+
+		function gamestate:update(dt)
+			self.world:update(dt)
+			for _, ball in ipairs(self.balls) do
+				ball:update(dt)
+			end
 		end
 
 		function gamestate:_draw()

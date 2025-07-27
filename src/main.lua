@@ -3,20 +3,18 @@ serpent = require("lib.modules.serpent") ---@diagnostic disable-line
 local gamestate = require("gamestate")
 local ball = require("ball")
 
-love.physics.setMeter(32)
+love.physics.setMeter(64)
 local gs = gamestate.new()
 local player = ball.new()
 function love.load()
 	love.graphics.setBackgroundColor(colors["Off White"])
 	gs:addBall(player)
-	gs:addBall(ball.new(nil, 64))
 	gs:addBall(ball.new())
-	gs:addBall(ball.new())
-	gs:addBall(ball.new())
+	player.gs.body:setLinearVelocity(200, 0)
 end
 
 function love.update(dt)
-	gs.world:update(dt)
+	gs:update(dt)
 end
 
 function love.draw()

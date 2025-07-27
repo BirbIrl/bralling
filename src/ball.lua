@@ -6,6 +6,7 @@ return {
 		local ball = {
 			radius = radius or 32,
 			health = 100,
+			maxSpeed = 1000,
 			---@type gsHeader
 			gs = nil
 		}
@@ -29,6 +30,16 @@ return {
 				shape = shape,
 				fixture = fixture,
 			}
+		end
+
+		function ball:update(dt)
+			local vel = vec.new(self.gs.body:getLinearVelocity())
+			local mag = vel:getmag()
+			local max = self.maxSpeed
+			if mag > max then
+				self.gs.body:setLinearVelocity(vel.x * (max / mag), vel.y * (max / mag))
+				print("dampened " .. mag .. " to " .. max)
+			end
 		end
 
 		function ball:_draw()
