@@ -10,11 +10,14 @@ function love.load()
 end
 
 function love.draw()
+	love.graphics.setCanvas(gs.canvas)
 	love.graphics.setLineWidth(2)
+	gs:_draw()
 	for _, ball in ipairs(gs.balls) do
-		love.graphics.setColor(colors[ball.color])
-		love.graphics.circle("fill", ball.gs.pos.x, ball.gs.pos.y, ball.radius)
-		love.graphics.setColor(colors["Almost Black"])
-		love.graphics.circle("line", ball.gs.pos.x, ball.gs.pos.y, ball.radius)
+		ball:_draw()
 	end
+	love.graphics.setCanvas()
+	love.graphics.setColor(1, 1, 1)
+	love.graphics.draw(gs.canvas, (love.graphics.getWidth() - gs.canvas:getWidth()) / 2
+	, (love.graphics.getHeight() - gs.canvas:getHeight()) / 2)
 end

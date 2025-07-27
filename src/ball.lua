@@ -30,6 +30,14 @@ return {
 			}
 		end
 
+		function ball:_draw()
+			love.graphics.setLineWidth(1)
+			love.graphics.setColor(colors[self.color])
+			love.graphics.circle("fill", self.gs.pos.x, self.gs.pos.y, self.radius)
+			love.graphics.setColor(colors["Almost Black"])
+			love.graphics.circle("line", self.gs.pos.x, self.gs.pos.y, self.radius)
+		end
+
 		return ball
 	end
 }

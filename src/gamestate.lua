@@ -1,3 +1,4 @@
+local colors = require("lib.modules.colors")
 local vec = require("lib.modules.vector")
 return {
 	new = function()
@@ -5,6 +6,7 @@ return {
 		local gamestate = {
 			size = vec.new(500, 500),
 		}
+		gamestate.canvas = love.graphics.newCanvas(gamestate.size.x, gamestate.size.y)
 		---@type Ball.lua[]
 		gamestate.balls = {}
 		---comment
@@ -17,6 +19,12 @@ return {
 			end
 			ball:_addToGame(self, pos)
 			table.insert(self.balls, ball)
+		end
+
+		function gamestate:_draw()
+			love.graphics.setLineWidth(5)
+			love.graphics.setColor(colors["Almost Black"])
+			love.graphics.rectangle("line", 0, 0, self.size.x, self.size.y)
 		end
 
 		return gamestate
