@@ -7,7 +7,6 @@ serpent = require("lib.modules.serpent") ---@diagnostic disable-line
 local gamestate = require("gamestate")
 local ball = require("ball")
 local weapon = require("weapon")
-
 love.physics.setMeter(64)
 
 
@@ -55,6 +54,8 @@ end
 
 function love.draw()
 	love.graphics.setBlendMode("alpha")
+	love.graphics.setColor(colors.list["Almost Black"])
+	love.graphics.print("FPS: " .. love.timer.getFPS(), 40, 40)
 	love.graphics.setCanvas(gs.canvas)
 	love.graphics.clear()
 	love.graphics.setLineWidth(2)

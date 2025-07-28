@@ -1,14 +1,23 @@
 local damageFont = love.graphics.newFont("assets/fonts/monocraft-birb-fix.ttf", 28)
 local vec = require("lib.modules.vector")
 local colors = require("lib.modules.colors")
+local function ghettoTextWithOutline(text, font, x, y, lineWidth, align, r, sx, sy, strokeWidth, textColor, borderColor)
+	love.graphics.setColor(borderColor)
+	love.graphics.printf(text, font, x - strokeWidth, y, lineWidth, align, r, sx, sy)
+	love.graphics.printf(text, font, x + strokeWidth, y, lineWidth, align, r, sx, sy)
+	love.graphics.printf(text, font, x, y - strokeWidth, lineWidth, align, r, sx, sy)
+	love.graphics.printf(text, font, x, y + strokeWidth, lineWidth, align, r, sy)
+	love.graphics.setColor(textColor)
+	love.graphics.printf(text, font, x, y, lineWidth, align, r, sx, sy)
+end
 return {
 	new = function(color, radius)
 		---@class Ball.lua
 		local ball = {
 			type = "ball",
 			radius = radius or 32,
-			health = 100,
-			magneticPull = 2,
+			health = 10,
+			magneticPull = 120,
 			maxSpeed = 1000,
 			---@type Weapon.lua[]
 			weapons = {},
@@ -105,7 +114,7 @@ return {
 		function ball:update(dt)
 			local velocity = self.gs:getLinearVelocity()
 
-			velocity = velocity + self:getDistanceFromBall(self:findClosestBall()):norm() * self.magneticPull
+			velocity = velocity + self:getDistanceFromBall(self:findClosestBall()):norm() * self.magneticPull * dt
 
 			-- cap out the velocity
 			local max = self.maxSpeed
@@ -131,25 +140,16 @@ return {
 			love.graphics.circle("fill", 0, 0, self.radius)
 			love.graphics.setColor(colors.list["Almost Black"])
 			love.graphics.circle("line", 0, 0, self.radius)
-			love.graphics.setBlendMode("alpha")
-			love.graphics.printf(tostring(self.health - self.gs.damage), damageFont, -self.radius - 2,
-				-damageFont:getHeight() / 2,
-				self.radius * 2, "center")
-			love.graphics.printf(tostring(self.health - self.gs.damage), damageFont, -self.radius + 2,
-				-damageFont:getHeight() / 2,
-				self.radius * 2, "center")
-			love.graphics.printf(tostring(self.health - self.gs.damage), damageFont, -self.radius,
-				-damageFont:getHeight() / 2 - 2,
-				self.radius * 2, "center")
-			love.graphics.printf(tostring(self.health - self.gs.damage), damageFont, -self.radius,
-				-damageFont:getHeight() / 2 + 2,
-				self.radius * 2, "center")
-			love.graphics.setBlendMode("add")
-			love.graphics.setColor(colors.list["Off White"])
-			love.graphics.printf(tostring(self.health - self.gs.damage), damageFont, -self.radius,
-				-damageFont:getHeight() / 2,
-				self.radius * 2, "center")
-			love.graphics.setBlendMode("alpha")
+			local dmg = tostring(self.health - self.gs.damage)
+			local textScale = 1
+			if dmg:len() > 2 then
+				print(dmg:len())
+				textScale = 1 / ((dmg:len() - 1) / 2)
+			end
+			ghettoTextWithOutline(tostring(self.health - self.gs.damage), damageFont, -self.radius,
+				-damageFont:getHeight() / 2 * textScale,
+				self.radius * 2 / textScale, "center", 0, textScale, textScale, 2, colors.list["Off White"],
+				colors.list["Almost Black"])
 			love.graphics.pop()
 		end
 

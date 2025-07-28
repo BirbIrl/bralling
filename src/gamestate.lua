@@ -52,7 +52,7 @@ return {
 		--gamestate.world = love.physics.newWorld(0, 0 * love.physics.getMeter(), true)
 		gamestate.world:setCallbacks(beginContact, endContact, preSolve, postSolve)
 		gamestate.canvas = love.graphics.newCanvas(
-			gamestate.size.x + gamestate.lineWidth, gamestate.size.y + gamestate.lineWidth
+			(gamestate.size.x + gamestate.lineWidth), gamestate.size.y + gamestate.lineWidth
 		)
 		gamestate:updateCollission()
 		---@type Ball.lua[]
