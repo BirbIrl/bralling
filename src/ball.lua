@@ -123,12 +123,14 @@ return {
 
 		function ball:_draw()
 			love.graphics.setLineWidth(1)
+			love.graphics.push()
+			love.graphics.translate(self.gs.body:getX(), self.gs.body:getY())
 			love.graphics.setColor(colors.list[self.color])
-			love.graphics.circle("fill", self.gs.body:getX(), self.gs.body:getY(),
-				self.radius)
+			love.graphics.circle("fill", 0, 0, self.radius)
 			love.graphics.setColor(colors.list["Almost Black"])
-			love.graphics.circle("line", self.gs.body:getX(), self.gs.body:getY(),
-				self.radius)
+			love.graphics.circle("line", 0, 0, self.radius)
+			love.graphics.print(self.health, 0, 0)
+			love.graphics.pop()
 		end
 
 		return ball

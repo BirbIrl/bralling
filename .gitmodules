@@ -1,0 +1,6 @@
+[submodule "src/lib/modules/luis"]
+	path = src/lib/modules/luis
+	url = https://github.com/SiENcE/luis/
+[submodule "src/luis"]
+	path = src/luis
+	url = https://github.com/SiENcE/luis/
