@@ -8,7 +8,9 @@ return {
 			health = 100,
 			magneticPull = 1,
 			maxSpeed = 1000,
-			---@type gsHeader
+			---@type Weapon.lua[]
+			weapons = {},
+			---@type ballGSHeader
 			gs = nil
 		}
 		if color then
@@ -24,7 +26,7 @@ return {
 		---@param shape love.Shape
 		---@param fixture love.Fixture
 		function ball:_addToGame(gamestate, body, shape, fixture)
-			---@class gsHeader
+			---@class ballGSHeader
 			self.gs = {
 				parent = gamestate,
 				body = body,
@@ -50,7 +52,7 @@ return {
 			local pos = self.gs:getPos()
 			local diffs = {}
 
-			for index, candidate in ipairs(self.gs.parent.balls) do
+			for _, candidate in ipairs(self.gs.parent.balls) do
 				table.insert(diffs, { ball = candidate, diff = (pos - candidate.gs:getPos()):getmag() })
 			end
 
@@ -59,14 +61,36 @@ return {
 			end)
 
 			table.remove(diffs, 1)
-			return diffs[1].ball
+			if diffs[1] then
+				return diffs[1].ball
+			end
+		end
+
+		---@param weapon Weapon.lua
+		function ball:addWeapon(weapon)
+			local body = love.physics.newBody(self.gs.parent.world, 0, 0, "dynamic")
+			body:setGravityScale(0)
+			local weaponPos = self.gs:getPos() + weapon.offset - weapon.size / 2
+			body:setPosition(weaponPos.x, weaponPos.y)
+			local shape = love.physics.newRectangleShape(weapon.size.x / 2, weapon.size.y / 2, weapon.size.x,
+				weapon.size.y)
+			local fixture = love.physics.newFixture(body, shape, 0)
+			local joint = love.physics.newWeldJoint(body, ball.gs.body, 0, 0)
+			fixture:setMask(1)
+			fixture:setSensor(true)
+			weapon:_addToBall(self, body, shape, fixture, joint)
+			table.insert(self.weapons, weapon)
 		end
 
 		---comment
 		---@param target Ball.lua
 		---@return Vector.lua
 		function ball:getDistanceFromBall(target)
-			return target.gs:getPos() - self.gs:getPos()
+			if target then
+				return target.gs:getPos() - self.gs:getPos()
+			else
+				return vec.new(0, 0)
+			end
 		end
 
 		function ball:update(dt)
@@ -94,6 +118,9 @@ return {
 			love.graphics.setColor(colors["Almost Black"])
 			love.graphics.circle("line", self.gs.body:getX(), self.gs.body:getY(),
 				self.radius)
+			for _, weapon in ipairs(self.weapons) do
+				weapon:_draw()
+			end
 		end
 
 		return ball

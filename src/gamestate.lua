@@ -22,11 +22,14 @@ return {
 					right = love.physics.newRectangleShape(wallThickness / 2 + self.size.x, self.size.y / 2,
 						wallThickness, self.size.y),
 				},
+				---@type love.Fixture[]
 				fixtures = {
 				},
 			}
 			for dir, shape in pairs(self.walls.shapes) do
-				self.walls.fixtures[dir] = love.physics.newFixture(self.walls.body, shape)
+				local fixture = love.physics.newFixture(self.walls.body, shape)
+				fixture:setMask()
+				self.walls.fixtures[dir] = fixture
 			end
 		end
 
@@ -69,8 +72,10 @@ return {
 				self.size.y + self.lineWidth)
 			for _, ball in ipairs(self.balls) do
 				ball:_draw()
+				--[[
 				love.graphics.setColor(1, 1, 1)
 				love.graphics.rectangle("fill", ball.gs.body:getX(), ball.gs.body:getY(), 5, 5)
+				--]]
 			end
 			love.graphics.translate(0, 0)
 		end

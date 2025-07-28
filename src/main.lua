@@ -2,15 +2,19 @@ local colors = require("lib.modules.colors")
 serpent = require("lib.modules.serpent") ---@diagnostic disable-line
 local gamestate = require("gamestate")
 local ball = require("ball")
+local weapon = require("weapon")
 
 love.physics.setMeter(64)
 local gs = gamestate.new()
 local player = ball.new()
+local wpn = weapon.new()
 function love.load()
 	love.graphics.setBackgroundColor(colors["Off White"])
 	gs:addBall(player)
-	gs:addBall(ball.new())
+	--gs:addBall(ball.new())
 	player:findClosestBall()
+	player:addWeapon(wpn)
+
 	--player.gs.body:setLinearVelocity(200, 0)
 end
 
