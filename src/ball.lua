@@ -149,7 +149,7 @@ return {
 			love.graphics.printf(tostring(self.health - self.gs.damage), damageFont, -self.radius,
 				-damageFont:getHeight() / 2,
 				self.radius * 2, "center")
-			love.graphics.setBlendMode("alpha", "premultiplied")
+			love.graphics.setBlendMode("alpha")
 			love.graphics.pop()
 		end
 

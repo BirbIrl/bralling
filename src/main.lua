@@ -54,14 +54,14 @@ function love.update(dt)
 end
 
 function love.draw()
+	love.graphics.setBlendMode("alpha")
 	love.graphics.setCanvas(gs.canvas)
-	love.graphics.setBlendMode("alpha", "premultiplied")
 	love.graphics.clear()
 	love.graphics.setLineWidth(2)
 	gs:_draw()
 	love.graphics.setCanvas()
-	love.graphics.setBlendMode("alpha")
 	love.graphics.setColor(1, 1, 1)
+	love.graphics.setBlendMode("alpha", "premultiplied")
 	love.graphics.draw(gs.canvas, (love.graphics.getWidth() - gs.canvas:getWidth()) / 2
 	, (love.graphics.getHeight() - gs.canvas:getHeight()) / 2)
 end
