@@ -1,4 +1,4 @@
-local damageFont = love.graphics.newFont("assets/fonts/monocraft-birb-fix.ttf", 20)
+local damageFont = love.graphics.newFont("assets/fonts/monocraft-birb-fix.ttf", 28)
 local vec = require("lib.modules.vector")
 local colors = require("lib.modules.colors")
 return {
@@ -131,9 +131,25 @@ return {
 			love.graphics.circle("fill", 0, 0, self.radius)
 			love.graphics.setColor(colors.list["Almost Black"])
 			love.graphics.circle("line", 0, 0, self.radius)
+			love.graphics.setBlendMode("alpha")
+			love.graphics.printf(tostring(self.health - self.gs.damage), damageFont, -self.radius - 2,
+				-damageFont:getHeight() / 2,
+				self.radius * 2, "center")
+			love.graphics.printf(tostring(self.health - self.gs.damage), damageFont, -self.radius + 2,
+				-damageFont:getHeight() / 2,
+				self.radius * 2, "center")
+			love.graphics.printf(tostring(self.health - self.gs.damage), damageFont, -self.radius,
+				-damageFont:getHeight() / 2 - 2,
+				self.radius * 2, "center")
+			love.graphics.printf(tostring(self.health - self.gs.damage), damageFont, -self.radius,
+				-damageFont:getHeight() / 2 + 2,
+				self.radius * 2, "center")
+			love.graphics.setBlendMode("add")
+			love.graphics.setColor(colors.list["Off White"])
 			love.graphics.printf(tostring(self.health - self.gs.damage), damageFont, -self.radius,
 				-damageFont:getHeight() / 2,
 				self.radius * 2, "center")
+			love.graphics.setBlendMode("alpha", "premultiplied")
 			love.graphics.pop()
 		end
 
