@@ -6,10 +6,11 @@ return {
 		---@class Weapon.lua
 		local weapon = {
 			type = "weapon",
-			offset = vec.new(40, 0),
+			offset = vec.new(30, 0),
 			size = vec.new(50, 50),
 			---@type weaponGSHeader
-			gs = nil
+			gs = nil,
+			hitCooldown = 5
 		}
 
 		function weapon:_addToBall(ball, body, shape, fixture)
@@ -23,6 +24,8 @@ return {
 				shape = shape,
 				---@type love.Fixture
 				fixture = fixture,
+				---@type number
+				cooldown = 0,
 			}
 
 			function self.gs:getPos()
@@ -52,24 +55,39 @@ return {
 			local radius = parent.radius
 
 
-			self.gs:setPos(parentPos + self.offset:clone():rotate(-parentAngle) +
-				vec.new(-self.size.x / 2, -self.size.y / 2))
+			self.gs:setPos(parentPos + (self.offset + vec.new(0, -self.size.y / 2)):rotate(-parentAngle))
 			self.gs.body:setAwake(true)
 
+
 			self.gs.body:setAngle(parentAngle)
+
+			if self.gs.cooldown > 0 then
+				self.gs.cooldown = self.gs.cooldown - dt
+			end
+
+			if self.gs.body:isActive() then
+				if self.gs.cooldown > 0 then
+					self.gs.body:setActive(false)
+				end
+			else
+				if self.gs.cooldown <= 0 then
+					self.gs.cooldown = 0
+					self.gs.body:setActive(true)
+				end
+			end
 			--print(self.gs.body:getAngle())
 		end
 
 		function weapon:_draw()
 			love.graphics.setLineWidth(1)
-			love.graphics.setColor(colors["Beige"])
+			love.graphics.setColor(colors.blend(colors.list["Beige"], { nil, nil, nil, 0 },
+				self.gs.cooldown / self.hitCooldown))
 			love.graphics.push()
-			love.graphics.translate(self.size.x / 2, self.size.y / 2)
 			love.graphics.translate(self.gs.body:getX(), self.gs.body:getY())
 			love.graphics.rotate(self.gs.body:getAngle())
-			love.graphics.translate(-self.size.x / 2, -self.size.y / 2)
 			love.graphics.rectangle("fill", 0, 0, self.size.x, self.size.y)
-			love.graphics.setColor(colors["Almost Black"])
+			love.graphics.setColor(colors.blend(colors.list["Almost Black"], { nil, nil, nil, 0 },
+				self.gs.cooldown / self.hitCooldown))
 			love.graphics.rectangle("line", 0, 0, self.size.x, self.size.y)
 			love.graphics.pop()
 		end

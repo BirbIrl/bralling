@@ -1,5 +1,6 @@
 local bib = require("lib.modules.biblib")
-local colors = {
+local colors = {}
+colors.list = {
 	["Acid Green"] = { 0.5607843137254902, 0.99607843137254903, 0.035294117647058823 },
 	["Adobe"] = { 0.74117647058823533, 0.42352941176470588, 0.28235294117647058 },
 	["Algae"] = { 0.32941176470588235, 0.67450980392156867, 0.40784313725490196 },
@@ -938,10 +939,21 @@ local colors = {
 	["Yellowy Brown"] = { 0.68235294117647061, 0.54509803921568623, 0.047058823529411764 },
 	["Yellowy Green"] = { 0.74901960784313726, 0.94509803921568625, 0.15686274509803921 }
 }
-colors._keys = {}
-for k, _ in pairs(colors) do
-	if k ~= "_keys" then
-		table.insert(colors._keys, k)
+colors.keys = {}
+function colors.blend(source, target, percentage)
+	local result = {}
+	for i = 1, 4, 1 do
+		if target[i] then
+			result[i] = bib.lerp(source[i], target[i], percentage)
+		else
+			result[i] = source[i]
+		end
 	end
+	return result
+end
+
+for k, color in pairs(colors.list) do
+	color[4] = 1
+	table.insert(colors.keys, k)
 end
 return colors

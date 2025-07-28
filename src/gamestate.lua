@@ -37,11 +37,19 @@ return {
 		end
 
 		local function beginContact(a, b, coll)
+			if a:getUserData().type == "weapon" and b:getUserData().type then
+				---@type Weapon.lua
+				local weapon = a:getUserData()
+				---@type Ball.lua
+				local target = b:getUserData()
+				weapon.gs.cooldown = weapon.hitCooldown
+				print("hit!")
+			end
 			--print("begin: " .. a:getUserData().type, b:getUserData().color)
-			print(coll:getPositions())
+			--print(coll:getPositions())
 		end
-		--gamestate.world = love.physics.newWorld(0, 9.81 * love.physics.getMeter(), true)
-		gamestate.world = love.physics.newWorld(0, 0 * love.physics.getMeter(), true)
+		gamestate.world = love.physics.newWorld(0, 9.81 * love.physics.getMeter(), true)
+		--gamestate.world = love.physics.newWorld(0, 0 * love.physics.getMeter(), true)
 		gamestate.world:setCallbacks(beginContact, endContact, preSolve, postSolve)
 		gamestate.canvas = love.graphics.newCanvas(
 			gamestate.size.x + gamestate.lineWidth, gamestate.size.y + gamestate.lineWidth
@@ -52,6 +60,8 @@ return {
 		---comment
 		---@param ball Ball.lua
 		function gamestate:addBall(ball, pos)
+			table.insert(self.balls, ball)
+			local id = #self.balls
 			if not pos then
 				pos = vec.new(
 					love.math.random(0 + ball.radius, self.size.x - ball.radius),
@@ -63,31 +73,33 @@ return {
 			local shape = love.physics.newCircleShape(ball.radius)
 			local fixture = love.physics.newFixture(body, shape)
 			fixture:setUserData(ball)
+			fixture:setGroupIndex(-id)
 			fixture:setRestitution(1.25)
-			ball:_addToGame(self, body, shape, fixture)
-			table.insert(self.balls, ball)
+			ball:_addToGame(self, body, shape, fixture, id)
 		end
 
 		function gamestate:update(dt)
+			self.world:update(dt)
 			for _, ball in ipairs(self.balls) do
 				ball:update(dt)
 			end
-			self.world:update(dt)
 		end
 
 		function gamestate:_draw()
-			love.graphics.translate(self.lineWidth / 2, self.lineWidth / 2)
-			love.graphics.setLineWidth(self.lineWidth)
-			love.graphics.setColor(colors["Almost Black"])
-			love.graphics.rectangle("line", 0 - self.lineWidth / 2, 0 - self.lineWidth / 2, self.size.x + self.lineWidth,
-				self.size.y + self.lineWidth)
+			for _, ball in ipairs(self.balls) do
+				for _, weapon in ipairs(ball.weapons) do
+					weapon:_draw()
+				end
+			end
 			for _, ball in ipairs(self.balls) do
 				ball:_draw()
-				--[[
-				love.graphics.setColor(1, 1, 1)
-				love.graphics.rectangle("fill", ball.gs.body:getX(), ball.gs.body:getY(), 5, 5)
-				--]]
 			end
+
+			love.graphics.translate(self.lineWidth / 2, self.lineWidth / 2)
+			love.graphics.setLineWidth(self.lineWidth)
+			love.graphics.setColor(colors.list["Almost Black"])
+			love.graphics.rectangle("line", 0 - self.lineWidth / 2, 0 - self.lineWidth / 2, self.size.x + self.lineWidth,
+				self.size.y + self.lineWidth)
 			love.graphics.translate(0, 0)
 		end
 

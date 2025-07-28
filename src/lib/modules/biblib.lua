@@ -7,5 +7,6 @@ return {
 			end
 		end
 		return keys
-	end
+	end,
+	lerp = function(a, b, t) return a * (1 - t) + b * t end
 }

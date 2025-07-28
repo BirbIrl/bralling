@@ -7,7 +7,7 @@ return {
 			type = "ball",
 			radius = radius or 32,
 			health = 100,
-			magneticPull = 0,
+			magneticPull = 2,
 			maxSpeed = 1000,
 			---@type Weapon.lua[]
 			weapons = {},
@@ -17,7 +17,7 @@ return {
 		if color then
 			ball.color = color
 		else
-			ball.color = colors._keys[math.random(1, #colors._keys)]
+			ball.color = colors.keys[math.random(1, #colors.keys)]
 		end
 		print(ball.color)
 
@@ -26,9 +26,10 @@ return {
 		---@param body love.Body
 		---@param shape love.Shape
 		---@param fixture love.Fixture
-		function ball:_addToGame(gamestate, body, shape, fixture)
+		function ball:_addToGame(gamestate, body, shape, fixture, id)
 			---@class ballGSHeader
 			self.gs = {
+				id = id,
 				parent = gamestate,
 				body = body,
 				shape = shape,
@@ -74,16 +75,16 @@ return {
 
 		---@param weapon Weapon.lua
 		function ball:addWeapon(weapon)
-			local body = love.physics.newBody(self.gs.parent.world, 0, 0, "dynamic")
-			body:setUserData(weapon)
 			local weaponPos = self.gs:getPos()
-			body:setPosition(weaponPos.x, weaponPos.y)
+			local body = love.physics.newBody(self.gs.parent.world, weaponPos.x, weaponPos.y, "kinematic")
+			body:setUserData(weapon)
 			local shape = love.physics.newRectangleShape(weapon.size.x / 2, weapon.size.y / 2, weapon.size.x,
 				weapon.size.y)
 			local fixture = love.physics.newFixture(body, shape, 0)
+			fixture:setGroupIndex(-self.gs.id)
 			fixture:setUserData(weapon)
 			--fixture:setMask(1)
-			fixture:setSensor(true)
+			--fixture:setSensor(true)
 			weapon:_addToBall(self, body, shape, fixture)
 			table.insert(self.weapons, weapon)
 		end
@@ -122,15 +123,12 @@ return {
 
 		function ball:_draw()
 			love.graphics.setLineWidth(1)
-			love.graphics.setColor(colors[self.color])
+			love.graphics.setColor(colors.list[self.color])
 			love.graphics.circle("fill", self.gs.body:getX(), self.gs.body:getY(),
 				self.radius)
-			love.graphics.setColor(colors["Almost Black"])
+			love.graphics.setColor(colors.list["Almost Black"])
 			love.graphics.circle("line", self.gs.body:getX(), self.gs.body:getY(),
 				self.radius)
-			for _, weapon in ipairs(self.weapons) do
-				weapon:_draw()
-			end
 		end
 
 		return ball

@@ -10,11 +10,15 @@ love.physics.setMeter(64)
 
 local gs = gamestate.new()
 local player = ball.new()
+local enemy = ball.new()
 local wpn = weapon.new()
+local wpn2 = weapon.new()
 function love.load()
-	love.graphics.setBackgroundColor(colors["Off White"])
+	love.graphics.setBackgroundColor(colors.list["Off White"])
 	gs:addBall(player, vec.new(20, 18))
-	gs:addBall(ball.new())
+	gs:addBall(enemy)
+	enemy.gs.body:applyLinearImpulse(100, 0)
+	--gs:addBall(ball.new())
 	player.gs.body:applyTorque(50000000)
 
 	--player.gs.body:setLinearVelocity(200, 0)
@@ -26,6 +30,7 @@ function love.update(dt)
 		weaponcnt = weaponcnt + dt
 		if weaponcnt > 1 then
 			player:addWeapon(wpn)
+			enemy:addWeapon(wpn2)
 			weaponcnt = nil
 		end
 	end
@@ -47,10 +52,12 @@ end
 
 function love.draw()
 	love.graphics.setCanvas(gs.canvas)
+	love.graphics.setBlendMode("alpha", "premultiplied")
 	love.graphics.clear()
 	love.graphics.setLineWidth(2)
 	gs:_draw()
 	love.graphics.setCanvas()
+	love.graphics.setBlendMode("alpha")
 	love.graphics.setColor(1, 1, 1)
 	love.graphics.draw(gs.canvas, (love.graphics.getWidth() - gs.canvas:getWidth()) / 2
 	, (love.graphics.getHeight() - gs.canvas:getHeight()) / 2)
