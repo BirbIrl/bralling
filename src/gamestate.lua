@@ -43,7 +43,7 @@ return {
 				---@type Ball.lua
 				local target = b:getUserData()
 				weapon.gs.cooldown = weapon.hitCooldown
-				print("hit!")
+				target.gs.damage = target.gs.damage + 1
 			end
 			--print("begin: " .. a:getUserData().type, b:getUserData().color)
 			--print(coll:getPositions())

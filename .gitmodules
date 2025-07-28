@@ -4,3 +4,6 @@
 [submodule "src/luis"]
 	path = src/luis
 	url = https://github.com/SiENcE/luis/
+[submodule "src/moonshine"]
+	path = src/moonshine
+	url = https://github.com/vrld/moonshine.git

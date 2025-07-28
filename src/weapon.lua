@@ -10,7 +10,7 @@ return {
 			size = vec.new(50, 50),
 			---@type weaponGSHeader
 			gs = nil,
-			hitCooldown = 5
+			hitCooldown = 1
 		}
 
 		function weapon:_addToBall(ball, body, shape, fixture)

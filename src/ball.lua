@@ -1,3 +1,4 @@
+local damageFont = love.graphics.newFont("assets/fonts/monocraft-birb-fix.ttf", 20)
 local vec = require("lib.modules.vector")
 local colors = require("lib.modules.colors")
 return {
@@ -34,6 +35,7 @@ return {
 				body = body,
 				shape = shape,
 				fixture = fixture,
+				damage = 0,
 			}
 			function self.gs:getPos()
 				return vec.new(self.body:getPosition())
@@ -129,7 +131,9 @@ return {
 			love.graphics.circle("fill", 0, 0, self.radius)
 			love.graphics.setColor(colors.list["Almost Black"])
 			love.graphics.circle("line", 0, 0, self.radius)
-			love.graphics.print(self.health, 0, 0)
+			love.graphics.printf(tostring(self.health - self.gs.damage), damageFont, -self.radius,
+				-damageFont:getHeight() / 2,
+				self.radius * 2, "center")
 			love.graphics.pop()
 		end
 
