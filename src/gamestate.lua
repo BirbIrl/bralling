@@ -5,6 +5,7 @@ return {
 	new = function()
 		---@class Gamestate.lua
 		local gamestate = {
+			type = "gamestate",
 			size = vec.new(500, 500),
 			lineWidth = 6,
 		}
@@ -26,14 +27,22 @@ return {
 				fixtures = {
 				},
 			}
+			self.walls.body:setUserData(self)
 			for dir, shape in pairs(self.walls.shapes) do
 				local fixture = love.physics.newFixture(self.walls.body, shape)
-				fixture:setMask()
+				fixture:setUserData(self)
+				--fixture:setMask()
 				self.walls.fixtures[dir] = fixture
 			end
 		end
 
-		gamestate.world = love.physics.newWorld(0, 9.81 * love.physics.getMeter(), true)
+		local function beginContact(a, b, coll)
+			--print("begin: " .. a:getUserData().type, b:getUserData().color)
+			print(coll:getPositions())
+		end
+		--gamestate.world = love.physics.newWorld(0, 9.81 * love.physics.getMeter(), true)
+		gamestate.world = love.physics.newWorld(0, 0 * love.physics.getMeter(), true)
+		gamestate.world:setCallbacks(beginContact, endContact, preSolve, postSolve)
 		gamestate.canvas = love.graphics.newCanvas(
 			gamestate.size.x + gamestate.lineWidth, gamestate.size.y + gamestate.lineWidth
 		)
@@ -49,19 +58,21 @@ return {
 					love.math.random(0 + ball.radius, self.size.y - ball.radius))
 			end
 			local body = love.physics.newBody(self.world, pos.x, pos.y, "dynamic")
+			body:setUserData(ball)
 			body:setLinearDamping(0)
 			local shape = love.physics.newCircleShape(ball.radius)
 			local fixture = love.physics.newFixture(body, shape)
+			fixture:setUserData(ball)
 			fixture:setRestitution(1.25)
 			ball:_addToGame(self, body, shape, fixture)
 			table.insert(self.balls, ball)
 		end
 
 		function gamestate:update(dt)
-			self.world:update(dt)
 			for _, ball in ipairs(self.balls) do
 				ball:update(dt)
 			end
+			self.world:update(dt)
 		end
 
 		function gamestate:_draw()

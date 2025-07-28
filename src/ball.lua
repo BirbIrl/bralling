@@ -4,9 +4,10 @@ return {
 	new = function(color, radius)
 		---@class Ball.lua
 		local ball = {
+			type = "ball",
 			radius = radius or 32,
 			health = 100,
-			magneticPull = 1,
+			magneticPull = 0,
 			maxSpeed = 1000,
 			---@type Weapon.lua[]
 			weapons = {},
@@ -37,14 +38,19 @@ return {
 				return vec.new(self.body:getPosition())
 			end
 
+			---@param vec Vector.lua
+			function self.gs:setPos(pos)
+				self.body:setPosition(pos.x, pos.y)
+			end
+
 			function self.gs:getLinearVelocity()
 				return vec.new(self.body:getLinearVelocity())
 			end
 
 			---@param vec Vector.lua
 			---@return nil
-			function self.gs:setLinearVelocity(vec)
-				self.body:setLinearVelocity(vec.x, vec.y)
+			function self.gs:setLinearVelocity(pos)
+				self.body:setLinearVelocity(pos.x, pos.y)
 			end
 		end
 
@@ -69,16 +75,16 @@ return {
 		---@param weapon Weapon.lua
 		function ball:addWeapon(weapon)
 			local body = love.physics.newBody(self.gs.parent.world, 0, 0, "dynamic")
-			body:setGravityScale(0)
-			local weaponPos = self.gs:getPos() + weapon.offset - weapon.size / 2
+			body:setUserData(weapon)
+			local weaponPos = self.gs:getPos()
 			body:setPosition(weaponPos.x, weaponPos.y)
 			local shape = love.physics.newRectangleShape(weapon.size.x / 2, weapon.size.y / 2, weapon.size.x,
 				weapon.size.y)
 			local fixture = love.physics.newFixture(body, shape, 0)
-			local joint = love.physics.newWeldJoint(body, ball.gs.body, 0, 0)
-			fixture:setMask(1)
+			fixture:setUserData(weapon)
+			--fixture:setMask(1)
 			fixture:setSensor(true)
-			weapon:_addToBall(self, body, shape, fixture, joint)
+			weapon:_addToBall(self, body, shape, fixture)
 			table.insert(self.weapons, weapon)
 		end
 
@@ -108,6 +114,10 @@ return {
 			end
 
 			self.gs:setLinearVelocity(velocity)
+
+			for _, weapon in ipairs(self.weapons) do
+				weapon:update(dt)
+			end
 		end
 
 		function ball:_draw()
