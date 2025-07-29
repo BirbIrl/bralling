@@ -88,9 +88,6 @@ return {
 		end
 
 		function gamestate:_draw()
-			love.graphics.push()
-			love.graphics.translate((love.graphics.getWidth() - gs.canvas:getWidth()) / 2,
-				(love.graphics.getHeight() - gs.canvas:getHeight()) / 2)
 			for _, ball in ipairs(self.balls) do
 				for _, weapon in ipairs(ball.weapons) do
 					weapon:_draw()
@@ -105,7 +102,7 @@ return {
 			love.graphics.setColor(colors.list["Almost Black"])
 			love.graphics.rectangle("line", 0 - self.lineWidth / 2, 0 - self.lineWidth / 2, self.size.x + self.lineWidth,
 				self.size.y + self.lineWidth)
-			love.graphics.pop()
+			love.graphics.translate(0, 0)
 		end
 
 		return gamestate

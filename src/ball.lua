@@ -154,10 +154,11 @@ return {
 
 		function ball:_draw()
 			love.graphics.setLineWidth(1)
+			local oldCanvas = love.graphics.getCanvas()
+			local canvas = love.graphics.newCanvas(self.gs.parent.size.x, self.gs.parent.size.y)
 			love.graphics.push()
 			love.graphics.translate(self.gs.body:getX(), self.gs.body:getY())
 			love.graphics.setColor(colors.list[self.color])
-			love.graphics.setShader(effect)
 			love.graphics.circle("fill", 0, 0, self.radius)
 			love.graphics.setColor(colors.list["Almost Black"])
 			love.graphics.circle("line", 0, 0, self.radius)
@@ -171,6 +172,8 @@ return {
 				-damageFont:getHeight() / 2 * textScale,
 				self.radius * 2 / textScale, "center", 0, textScale, textScale, 2, colors.list["Off White"],
 				colors.list["Almost Black"])
+			love.graphics.setCanvas(oldCanvas)
+			love.graphics.draw(canvas)
 			love.graphics.pop()
 		end
 

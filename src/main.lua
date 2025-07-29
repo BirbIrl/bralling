@@ -55,12 +55,15 @@ function love.draw()
 	love.graphics.setBlendMode("alpha")
 	love.graphics.setColor(colors.list["Almost Black"])
 	love.graphics.print("FPS: " .. love.timer.getFPS(), 40, 40)
+	love.graphics.setCanvas(gs.canvas)
+	love.graphics.clear()
 	love.graphics.setLineWidth(2)
 	gs:_draw()
+	love.graphics.setCanvas()
 	love.graphics.setColor(1, 1, 1)
 	love.graphics.setBlendMode("alpha", "premultiplied")
-	--love.graphics.draw(gs.canvas, (love.graphics.getWidth() - gs.canvas:getWidth()) / 2
-	--, (love.graphics.getHeight() - gs.canvas:getHeight()) / 2)
+	love.graphics.draw(gs.canvas, (love.graphics.getWidth() - gs.canvas:getWidth()) / 2
+	, (love.graphics.getHeight() - gs.canvas:getHeight()) / 2)
 end
 
 ---@diagnostic disable-next-line: duplicate-set-field
