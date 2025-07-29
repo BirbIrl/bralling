@@ -16,7 +16,7 @@ return {
 		local ball = {
 			type = "ball",
 			radius = radius or 32,
-			health = 10,
+			health = 3,
 			magneticPull = 120,
 			maxSpeed = 1000,
 			---@type Weapon.lua[]
@@ -66,21 +66,24 @@ return {
 			end
 		end
 
-		function ball:findClosestBall()
-			local pos = self.gs:getPos()
-			local diffs = {}
-
-			for _, candidate in ipairs(self.gs.parent.balls) do
-				table.insert(diffs, { ball = candidate, diff = (pos - candidate.gs:getPos()):getmag() })
+		function ball:perish()
+			for index, targetBall in ipairs(self.gs.parent.balls) do
+				if self == targetBall then
+					table.remove(self.gs.parent.balls, index)
+					self.gs.body:destroy()
+					for _, weapon in ipairs(self.weapons) do
+						weapon.gs.body:destroy()
+					end
+					self.gs = nil
+					break
+				end
 			end
+		end
 
-			table.sort(diffs, function(a, b)
-				return a.diff < b.diff
-			end)
-
-			table.remove(diffs, 1)
-			if diffs[1] then
-				return diffs[1].ball
+		function ball:hit(damage)
+			self.gs.damage = self.gs.damage + 1
+			if self.gs.damage >= self.health then
+				ball:perish()
 			end
 		end
 
@@ -100,7 +103,6 @@ return {
 			table.insert(self.weapons, weapon)
 		end
 
-		---comment
 		---@param target Ball.lua
 		---@return Vector.lua
 		function ball:getDistanceFromBall(target)
@@ -108,6 +110,24 @@ return {
 				return target.gs:getPos() - self.gs:getPos()
 			else
 				return vec.new(0, 0)
+			end
+		end
+
+		function ball:findClosestBall()
+			local pos = self.gs:getPos()
+			local diffs = {}
+
+			for _, candidate in ipairs(self.gs.parent.balls) do
+				table.insert(diffs, { ball = candidate, diff = (pos - candidate.gs:getPos()):getmag() })
+			end
+
+			table.sort(diffs, function(a, b)
+				return a.diff < b.diff
+			end)
+
+			table.remove(diffs, 1)
+			if diffs[1] then
+				return diffs[1].ball
 			end
 		end
 
@@ -137,6 +157,7 @@ return {
 			love.graphics.push()
 			love.graphics.translate(self.gs.body:getX(), self.gs.body:getY())
 			love.graphics.setColor(colors.list[self.color])
+			love.graphics.setShader(effect)
 			love.graphics.circle("fill", 0, 0, self.radius)
 			love.graphics.setColor(colors.list["Almost Black"])
 			love.graphics.circle("line", 0, 0, self.radius)

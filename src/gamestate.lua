@@ -43,7 +43,7 @@ return {
 				---@type Ball.lua
 				local target = b:getUserData()
 				weapon.gs.cooldown = weapon.hitCooldown
-				target.gs.damage = target.gs.damage + 1
+				target:hit(1)
 			end
 			--print("begin: " .. a:getUserData().type, b:getUserData().color)
 			--print(coll:getPositions())
@@ -81,11 +81,16 @@ return {
 		function gamestate:update(dt)
 			self.world:update(dt)
 			for _, ball in ipairs(self.balls) do
-				ball:update(dt)
+				if ball then
+					ball:update(dt)
+				end
 			end
 		end
 
 		function gamestate:_draw()
+			love.graphics.push()
+			love.graphics.translate((love.graphics.getWidth() - gs.canvas:getWidth()) / 2,
+				(love.graphics.getHeight() - gs.canvas:getHeight()) / 2)
 			for _, ball in ipairs(self.balls) do
 				for _, weapon in ipairs(ball.weapons) do
 					weapon:_draw()
@@ -100,7 +105,7 @@ return {
 			love.graphics.setColor(colors.list["Almost Black"])
 			love.graphics.rectangle("line", 0 - self.lineWidth / 2, 0 - self.lineWidth / 2, self.size.x + self.lineWidth,
 				self.size.y + self.lineWidth)
-			love.graphics.translate(0, 0)
+			love.graphics.pop()
 		end
 
 		return gamestate
