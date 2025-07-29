@@ -36,19 +36,22 @@ return {
 			end
 		end
 
+		local endContact, preSolve, postSolve
 		local function beginContact(a, b, coll)
-			if a:getUserData().type == "weapon" and b:getUserData().type then
+			if a:getUserData().type == "weapon" and b:getUserData().type == "ball" then
 				---@type Weapon.lua
 				local weapon = a:getUserData()
 				---@type Ball.lua
 				local target = b:getUserData()
 				weapon.gs.cooldown = weapon.hitCooldown
+				print(serpent.block(target))
+				target.gs:setLinearVelocity(target.gs:getLinearVelocity() + weapon.gs.parent.gs:getLinearVelocity())
 				target:hit(1)
 			end
 			--print("begin: " .. a:getUserData().type, b:getUserData().color)
 			--print(coll:getPositions())
 		end
-		gamestate.world = love.physics.newWorld(0, 9.81 * love.physics.getMeter(), true)
+		gamestate.world = love.physics.newWorld(0, 0 * love.physics.getMeter(), true)
 		--gamestate.world = love.physics.newWorld(0, 0 * love.physics.getMeter(), true)
 		gamestate.world:setCallbacks(beginContact, endContact, preSolve, postSolve)
 		gamestate.canvas = love.graphics.newCanvas(

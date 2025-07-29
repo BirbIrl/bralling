@@ -4,12 +4,11 @@ local vec = require("lib.modules.vector")
 --local luis = initLuis("luis/widgets")
 --luis.flux = require("luis.3rdparty.flux")
 serpent = require("lib.modules.serpent") ---@diagnostic disable-line
-local lurker = require "lib.modules.lurker"
+--local lurker = require "lib.modules.lurker"
 local gamestate = require("gamestate")
 local ball = require("ball")
 local weapon = require("weapon")
 love.physics.setMeter(64)
-effect = love.graphics.newShader("assets/shaders/perish.vert")
 love.graphics.setBackgroundColor(colors.list["Off White"])
 
 function love.load()
@@ -19,10 +18,11 @@ function love.load()
 	wpn = weapon.new()
 	wpn2 = weapon.new()
 	gs:addBall(player, vec.new(20, 18))
+	--gs:addBall(enemy, vec.new(80, 180))
 	gs:addBall(enemy)
 	player:addWeapon(wpn)
 	enemy:addWeapon(wpn2)
-	enemy.gs.body:applyLinearImpulse(100, 0)
+	player.gs.body:applyLinearImpulse(100, 0)
 	--gs:addBall(ball.new())
 	player.gs.body:applyTorque(50000000)
 
@@ -31,20 +31,19 @@ end
 
 local t = 0
 function love.update(dt)
-	lurker.update()
+	--lurker.update()
 	t = t + dt
-	--effect:send("time", t)
 	if love.keyboard.isDown("up") then
-		player.gs:setPos(player.gs:getPos() + vec.new(0, -5.0)) -- Move up
+		player.gs:setPos(player.gs:getPos() + vec.new(0, -1.0))
 	end
 	if love.keyboard.isDown("down") then
-		player.gs:setPos(player.gs:getPos() + vec.new(0, 5.0)) -- Move down
+		player.gs:setPos(player.gs:getPos() + vec.new(0, 1.0))
 	end
 	if love.keyboard.isDown("left") then
-		player.gs:setPos(player.gs:getPos() + vec.new(-5.0, 0)) -- Move left
+		player.gs:setPos(player.gs:getPos() + vec.new(-1.0, 0))
 	end
 	if love.keyboard.isDown("right") then
-		player.gs:setPos(player.gs:getPos() + vec.new(5.0, 0)) -- Move right
+		player.gs:setPos(player.gs:getPos() + vec.new(1.0, 0))
 	end
 
 	gs:update(dt)

@@ -26,7 +26,18 @@ return {
 				fixture = fixture,
 				---@type number
 				cooldown = 0,
+				data = self,
 			}
+
+			function self.gs:isActive()
+				---@diagnostic disable-next-line:need-check-nil
+				return self.body:isActive()
+			end
+
+			function self.gs:setActive(boolean)
+				---@diagnostic disable-next-line:need-check-nil
+				self.body:setActive(boolean)
+			end
 
 			function self.gs:getPos()
 				return vec.new(self.body:getPosition())
@@ -49,11 +60,12 @@ return {
 		end
 
 		function weapon:update(dt)
+			self.gs:setLinearVelocity(self.gs.parent.gs:getLinearVelocity())
+			print(self.gs:getLinearVelocity())
 			local parent = self.gs.parent
 			local parentPos = parent.gs:getPos()
 			local parentAngle = parent.gs.body:getAngle()
 			local radius = parent.radius
-
 
 			self.gs:setPos(parentPos + (self.offset + vec.new(0, -self.size.y / 2)):rotate(-parentAngle))
 			self.gs.body:setAwake(true)
@@ -69,7 +81,7 @@ return {
 				if self.gs.cooldown > 0 then
 					self.gs.body:setActive(false)
 				end
-			else
+			elseif parent.gs:isActive() then
 				if self.gs.cooldown <= 0 then
 					self.gs.cooldown = 0
 					self.gs.body:setActive(true)
