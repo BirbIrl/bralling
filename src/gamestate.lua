@@ -8,6 +8,7 @@ return {
 			type = "gamestate",
 			size = vec.new(500, 500),
 			lineWidth = 6,
+			freeze = 0,
 		}
 
 		function gamestate:updateCollission()
@@ -31,7 +32,8 @@ return {
 			for dir, shape in pairs(self.walls.shapes) do
 				local fixture = love.physics.newFixture(self.walls.body, shape)
 				fixture:setUserData(self)
-				--fixture:setMask()
+				fixture:setMask(2)
+				fixture:setCategory(2)
 				self.walls.fixtures[dir] = fixture
 			end
 		end
@@ -46,6 +48,7 @@ return {
 				weapon.gs.cooldown = weapon.hitCooldown
 				target.gs:setLinearVelocity(target.gs:getLinearVelocity() + weapon.gs.parent.gs:getLinearVelocity())
 				target:hit(1)
+				target.gs.parent.freeze = target.gs.parent.freeze + 0.25
 			end
 			--print("begin: " .. a:getUserData().type, b:getUserData().color)
 			--print(coll:getPositions())
@@ -77,16 +80,17 @@ return {
 			fixture:setUserData(ball)
 			fixture:setGroupIndex(-id)
 			fixture:setRestitution(1.25)
+			fixture:setMask(3)
 			ball:_addToGame(self, body, shape, fixture, id)
 		end
 
 		function gamestate:update(dt)
-			self.world:update(dt)
 			for _, ball in ipairs(self.balls) do
 				if ball then
 					ball:update(dt)
 				end
 			end
+			self.world:update(dt)
 		end
 
 		function gamestate:_draw()

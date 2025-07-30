@@ -31,8 +31,15 @@ end
 
 local t = 0
 function love.update(dt)
+	if dt > 0.0166 then dt = 0.0166 end
+	if gs.freeze > 0 then
+		gs.freeze = gs.freeze - dt
+		if gs.freeze < 0 then
+			gs.freeze = 0
+		end
+		return
+	end
 	--lurker.update()
-	t = t + dt
 	if love.keyboard.isDown("up") then
 		player.gs:setPos(player.gs:getPos() + vec.new(0, -1.0))
 	end

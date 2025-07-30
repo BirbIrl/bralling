@@ -39,6 +39,23 @@ return {
 				self.body:setActive(boolean)
 			end
 
+			function self.gs:isTangible()
+				local category = self.fixture:getCategory()
+				if category == 2 then
+					return true
+				elseif category == 1 then
+					return false
+				end
+			end
+
+			function self.gs:setTangible(boolean)
+				if boolean then
+					self.fixture:setCategory(2)
+				else
+					self.fixture:setCategory(3)
+				end
+			end
+
 			function self.gs:getPos()
 				return vec.new(self.body:getPosition())
 			end
@@ -60,17 +77,18 @@ return {
 		end
 
 		function weapon:update(dt)
-			self.gs:setLinearVelocity(self.gs.parent.gs:getLinearVelocity())
 			local parent = self.gs.parent
-			local parentPos = parent.gs:getPos()
-			local parentAngle = parent.gs.body:getAngle()
-			local radius = parent.radius
 
-			self.gs:setPos(parentPos + (self.offset + vec.new(0, -self.size.y / 2)):rotate(-parentAngle))
+			if not self.gs.parent.gs:isDead() then
+				local parentPos = parent.gs:getPos()
+				local parentAngle = parent.gs.body:getAngle()
+				self.gs:setLinearVelocity(self.gs.parent.gs:getLinearVelocity())
+				self.gs:setPos(parentPos + (self.offset + vec.new(0, -self.size.y / 2)):rotate(-parentAngle))
+				self.gs.body:setAngle(parentAngle)
+			end
+
 			self.gs.body:setAwake(true)
 
-
-			self.gs.body:setAngle(parentAngle)
 
 			if self.gs.cooldown > 0 then
 				self.gs.cooldown = self.gs.cooldown - dt
@@ -78,12 +96,12 @@ return {
 
 			if self.gs.body:isActive() then
 				if self.gs.cooldown > 0 then
-					self.gs.body:setActive(false)
+					self.gs:setTangible(false)
 				end
 			elseif parent.gs:isActive() then
 				if self.gs.cooldown <= 0 then
 					self.gs.cooldown = 0
-					self.gs.body:setActive(true)
+					self.gs:setTangible(true)
 				end
 			end
 			--print(self.gs.body:getAngle())

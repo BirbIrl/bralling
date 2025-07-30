@@ -5,7 +5,7 @@ extern vec2 velocity;
 extern vec2 impactPoint;
 
 vec2 scale = love_ScreenSize.xy;
-float t = sqrt(time / duration);
+float t = pow(time / duration, 0.95);
 ivec2 scatterSample(vec2 tc)
 {
     vec2 dir = tc - (impactPoint / scale);
@@ -15,7 +15,7 @@ ivec2 scatterSample(vec2 tc)
         return ivec2(0, 0);
     }
     float scatterRange = 1.0 + pow(length(dir), 2);
-    float scatterStrength = length(velocity) * t / 2000.0;
+    float scatterStrength = length(velocity) * t / 1000.0;
     vec2 displacement = dirNorm * scatterStrength * scatterRange;
     return ivec2(displacement * scale);
 }
@@ -32,7 +32,7 @@ vec4 effect(vec4 c, Image tx, vec2 tc, vec2 sc)
     {
         pixel = vec4(0, 0, 0, 0);
     }
-    pixel.a *= (1.0 - max(time / duration + seed / 2, 0));
+    pixel.a *= (1.0 - max(t + seed / 2, 0));
 
     return pixel * c;
 }

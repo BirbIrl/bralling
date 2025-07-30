@@ -17,7 +17,7 @@ return {
 		local ball = {
 			type = "ball",
 			radius = radius or 32,
-			health = 5,
+			health = 1,
 			magneticPull = 70,
 			maxSpeed = 1000,
 			---@type Weapon.lua[]
@@ -60,7 +60,7 @@ return {
 				---@diagnostic disable-next-line:need-check-nil
 				self.body:setActive(boolean)
 				for _, weapon in ipairs(self.data.weapons) do
-					weapon.gs:setActive(false)
+					weapon.gs:setTangible(false)
 				end
 			end
 
@@ -133,6 +133,7 @@ return {
 						gs.body:destroy()
 						for _, weapon in ipairs(self.weapons) do
 							weapon.gs.body:destroy()
+							weapon.gs = nil
 						end
 						gs = nil
 						break
@@ -155,10 +156,11 @@ return {
 			body:setUserData(weapon)
 			local shape = love.physics.newRectangleShape(weapon.size.x / 2, weapon.size.y / 2, weapon.size.x,
 				weapon.size.y)
-			local fixture = love.physics.newFixture(body, shape, 0)
+			local fixture = love.physics.newFixture(body, shape, 1)
 			fixture:setGroupIndex(-self.gs.id)
 			fixture:setUserData(weapon)
-			--fixture:setMask(1)
+			fixture:setMask(2)
+			fixture:setCategory(2)
 			--fixture:setSensor(true)
 			weapon:_addToBall(self, body, shape, fixture)
 			table.insert(self.weapons, weapon)
@@ -215,12 +217,13 @@ return {
 				end
 
 				self.gs:setLinearVelocity(velocity)
+			end
 
-				for _, weapon in ipairs(self.weapons) do
+			for _, weapon in ipairs(self.weapons) do
+				if weapon.gs then
 					weapon:update(dt)
 				end
 			end
-
 			for _, shader in ipairs(self.gs.shaders) do
 				shader:send("time", shader:get("time") + dt)
 			end
