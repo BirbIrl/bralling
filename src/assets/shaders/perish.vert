@@ -32,7 +32,7 @@ vec4 effect(vec4 c, Image tx, vec2 tc, vec2 sc)
     {
         pixel = vec4(0, 0, 0, 0);
     }
-    pixel.a *= (1.0 - max(time / duration + seed, 0));
+    pixel.a *= (1.0 - max(time / duration + seed / 2, 0));
 
     return pixel * c;
 }

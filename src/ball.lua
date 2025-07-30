@@ -17,8 +17,8 @@ return {
 		local ball = {
 			type = "ball",
 			radius = radius or 32,
-			health = 1,
-			magneticPull = 0,
+			health = 5,
+			magneticPull = 70,
 			maxSpeed = 1000,
 			---@type Weapon.lua[]
 			weapons = {},
@@ -120,7 +120,7 @@ return {
 			if not deathShader then
 				deathShader       = shaderWrapper.new("perish")
 				local velocity    = self.gs:getVelocity()
-				local impactPoint = self.gs:getPos() + (velocity:clone():norm()) * -self.radius * 1.5
+				local impactPoint = self.gs:getPos() + (-velocity:clone():norm()) * self.radius * 1.5
 				deathShader:send("velocity", { velocity.x, velocity.y })
 				deathShader:send("impactPoint", { impactPoint.x, impactPoint.y })
 				table.insert(self.gs.shaders, deathShader)

@@ -61,7 +61,6 @@ return {
 
 		function weapon:update(dt)
 			self.gs:setLinearVelocity(self.gs.parent.gs:getLinearVelocity())
-			print(self.gs:getLinearVelocity())
 			local parent = self.gs.parent
 			local parentPos = parent.gs:getPos()
 			local parentAngle = parent.gs.body:getAngle()

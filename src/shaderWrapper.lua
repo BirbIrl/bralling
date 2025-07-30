@@ -1,7 +1,7 @@
 local bib = require("lib.modules.biblib")
 local defaults = {
 	perish = {
-		variables = { time = 0, duration = 0.75, velocity = nil, impactPoint = nil },
+		variables = { time = 0, duration = 1.25, velocity = nil, impactPoint = nil },
 		constants = {},
 	}
 }
