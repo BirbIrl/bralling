@@ -17,7 +17,7 @@ return {
 		local ball = {
 			type = "ball",
 			radius = radius or 32,
-			health = 100000000000000000000000000000000,
+			health = 1,
 			magneticPull = 0,
 			maxSpeed = 1000,
 			---@type Weapon.lua[]
@@ -60,7 +60,7 @@ return {
 				---@diagnostic disable-next-line:need-check-nil
 				self.body:setActive(boolean)
 				for _, weapon in ipairs(self.data.weapons) do
-					weapon.gs.hitbox:setActive(false)
+					weapon.gs:setActive(false)
 				end
 			end
 
@@ -153,8 +153,8 @@ return {
 			local weaponPos = self.gs:getPos()
 			local body = love.physics.newBody(self.gs.parent.world, weaponPos.x, weaponPos.y, "dynamic")
 			body:setUserData(weapon)
-			body:setLinearDamping(0)
-			local shape = love.physics.newRectangleShape(0, 0, 0, 0)
+			local shape = love.physics.newRectangleShape(weapon.size.x / 2, weapon.size.y / 2, weapon.size.x,
+				weapon.size.y)
 			local fixture = love.physics.newFixture(body, shape, 0)
 			fixture:setGroupIndex(-self.gs.id)
 			fixture:setUserData(weapon)

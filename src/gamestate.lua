@@ -38,9 +38,9 @@ return {
 
 		local endContact, preSolve, postSolve
 		local function beginContact(a, b, coll)
-			if a:getUserData().type == "hitbox" and b:getUserData().type == "ball" then
+			if a:getUserData().type == "weapon" and b:getUserData().type == "ball" then
 				---@type Weapon.lua
-				local weapon = a:getUserData().parent
+				local weapon = a:getUserData()
 				---@type Ball.lua
 				local target = b:getUserData()
 				weapon.gs.cooldown = weapon.hitCooldown
