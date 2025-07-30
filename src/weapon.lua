@@ -94,7 +94,7 @@ return {
 				self.gs.cooldown = self.gs.cooldown - dt
 			end
 
-			if self.gs.body:isActive() then
+			if self.gs:isTangible() then
 				if self.gs.cooldown > 0 then
 					self.gs:setTangible(false)
 				end

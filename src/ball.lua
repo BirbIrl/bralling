@@ -60,7 +60,7 @@ return {
 				---@diagnostic disable-next-line:need-check-nil
 				self.body:setActive(boolean)
 				for _, weapon in ipairs(self.data.weapons) do
-					weapon.gs:setTangible(false)
+					weapon.gs:setTangible(boolean)
 				end
 			end
 
