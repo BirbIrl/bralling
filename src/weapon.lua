@@ -7,7 +7,7 @@ return {
 		local weapon = {
 			type = "weapon",
 			offset = vec.new(30, 0),
-			size = vec.new(50, 50),
+			size = vec.new(50, 30),
 			---@type weaponGSHeader
 			gs = nil,
 			hitCooldown = 1
@@ -51,8 +51,10 @@ return {
 			function self.gs:setTangible(boolean)
 				if boolean then
 					self.fixture:setCategory(2)
+					self.fixture:setMask(3, 2)
 				else
 					self.fixture:setCategory(3)
+					fixture:setMask(3)
 				end
 			end
 
@@ -109,14 +111,22 @@ return {
 
 		function weapon:_draw()
 			love.graphics.setLineWidth(1)
-			love.graphics.setColor(colors.blend(colors.list["Beige"], { nil, nil, nil, 0 },
-				self.gs.cooldown / self.hitCooldown))
+			local deathShader
+			for _, shader in ipairs(self.gs.parent.gs.shaders) do
+				if shader.type == "perish" then
+					deathShader = shader
+				end
+			end
+			local alpha = self.gs.cooldown / self.hitCooldown
+			if deathShader then
+				alpha = deathShader:get("time") / deathShader:get("duration")
+			end
+			love.graphics.setColor(colors.blend(colors.list["Beige"], { nil, nil, nil, 0 }, alpha))
 			love.graphics.push()
 			love.graphics.translate(self.gs.body:getX(), self.gs.body:getY())
 			love.graphics.rotate(self.gs.body:getAngle())
 			love.graphics.rectangle("fill", 0, 0, self.size.x, self.size.y)
-			love.graphics.setColor(colors.blend(colors.list["Almost Black"], { nil, nil, nil, 0 },
-				self.gs.cooldown / self.hitCooldown))
+			love.graphics.setColor(colors.blend(colors.list["Almost Black"], { nil, nil, nil, 0 }, alpha))
 			love.graphics.rectangle("line", 0, 0, self.size.x, self.size.y)
 			love.graphics.pop()
 		end

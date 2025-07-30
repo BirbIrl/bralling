@@ -17,7 +17,7 @@ return {
 		local ball = {
 			type = "ball",
 			radius = radius or 32,
-			health = 5,
+			health = 7,
 			magneticPull = 70,
 			maxSpeed = 1000,
 			---@type Weapon.lua[]
@@ -121,7 +121,7 @@ return {
 				deathShader       = shaderWrapper.new("perish")
 				local velocity    = self.gs:getVelocity()
 				local impactPoint = self.gs:getPos() + (-velocity:clone():norm()) * self.radius * 1.5
-				deathShader:send("velocity", { velocity.x, velocity.y })
+				deathShader:send("velocity", { math.min(velocity.x, 500), math.min(velocity.y, 500) })
 				deathShader:send("impactPoint", { impactPoint.x, impactPoint.y })
 				table.insert(self.gs.shaders, deathShader)
 			end
@@ -156,8 +156,9 @@ return {
 			body:setUserData(weapon)
 			local shape = love.physics.newRectangleShape(weapon.size.x / 2, weapon.size.y / 2, weapon.size.x,
 				weapon.size.y)
-			local fixture = love.physics.newFixture(body, shape, 1)
+			local fixture = love.physics.newFixture(body, shape, 5)
 			fixture:setGroupIndex(-self.gs.id)
+			fixture:setRestitution(0.9)
 			fixture:setUserData(weapon)
 			fixture:setMask(2)
 			fixture:setCategory(2)

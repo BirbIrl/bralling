@@ -22,7 +22,7 @@ function love.load()
 	gs:addBall(enemy)
 	player:addWeapon(wpn)
 	enemy:addWeapon(wpn2)
-	player.gs.body:applyLinearImpulse(100, 0)
+	player.gs.body:applyLinearImpulse(100, 99999999)
 	--gs:addBall(ball.new())
 	player.gs.body:applyTorque(50000000)
 

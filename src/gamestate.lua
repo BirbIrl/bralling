@@ -79,7 +79,7 @@ return {
 			local fixture = love.physics.newFixture(body, shape)
 			fixture:setUserData(ball)
 			fixture:setGroupIndex(-id)
-			fixture:setRestitution(1.25)
+			fixture:setRestitution(1.10)
 			fixture:setMask(3)
 			ball:_addToGame(self, body, shape, fixture, id)
 		end
