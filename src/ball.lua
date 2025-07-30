@@ -17,7 +17,7 @@ return {
 		local ball = {
 			type = "ball",
 			radius = radius or 32,
-			health = 1,
+			health = 5,
 			magneticPull = 70,
 			maxSpeed = 1000,
 			---@type Weapon.lua[]
